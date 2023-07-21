@@ -62,21 +62,23 @@ while True:
         flagFill = "green"
         lapsColor = (255,255,255)
 
-    if flag_state == "2":
+    elif flag_state == "2":
         flagFill = "yellow"
         lapsColor = (0,0,0)
 
-    if flag_state == "3":
+    elif flag_state == "3":
         flagFill = "red"
         lapsColor = (255,255,255)
 
-    if flag_state == "4":
+    elif flag_state == "4":
         flagFill = "white"
         lapsColor = (0,0,0)
 
-    if flag_state == "9":
+    elif flag_state == "9":
         flagFill = "grey"
         lapsColor = (0,0,0)
+    else:
+        initialized = False
 
     flagOutline = flagFill
     
