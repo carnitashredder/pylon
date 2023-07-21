@@ -3,6 +3,8 @@ from PIL import Image, ImageFont, ImageDraw
 from rgbmatrix import RGBMatrix, RGBMatrixOptions
 import time
 
+initialized = False
+
 canvas_width = 128
 canvas_height = 32
 white = (255,255,255)
@@ -34,24 +36,23 @@ while True:
         laps_in_race = str(data["laps_in_race"])
         driverList = list()
         for i in data["vehicles"]:
-            driverList.append(i["driver"]["driver_id"])
-            
+            driverList.append(i["driver"]["driver_id"])  
         #print (driverList)
 
-    with urllib.request.urlopen("http://cf.nascar.com/cacher/drivers.json") as url:
-        data = json.load(url)
-
-        for i in data["response"]:
-            for j in driverList:
-                if j == i["Nascar_Driver_ID"]:
-                    path = "./badge/" + str(i["Nascar_Driver_ID"]) + ".jpg"
-                    if not os.path.isfile(path):
-                        #print (i["Badge_Image"])
-                        try:
-                            urllib.request.urlretrieve(i["Badge_Image"], path)
-                        except:
-                            print("failed")
-                            break
+    if initialized == False:
+        with urllib.request.urlopen("http://cf.nascar.com/cacher/drivers.json") as url:
+            data = json.load(url)
+            for i in data["response"]:
+                for j in driverList:
+                    if j == i["Nascar_Driver_ID"]:
+                        path = "./badge/" + str(i["Nascar_Driver_ID"]) + ".jpg"
+                        if not os.path.isfile(path):
+                            try:
+                                urllib.request.urlretrieve(i["Badge_Image"], path)
+                            except:
+                                print("failed to get image for " + str(i["Nascar_Driver_ID"]))
+                                break
+            initialized = True
 
     flagFill = "purple"
     lapsColor = (255,255,255)
