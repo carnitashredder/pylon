@@ -5,10 +5,15 @@ import time
 
 initialized = False
 
-canvas_width = 128
-canvas_height = 32
+canvas_width = 32*10
+canvas_height = 128*10
 white = (255,255,255)
-font = ImageFont.truetype("fonts/tiny.otf", 5)
+size = int(canvas_width/2)
+badgeSize = (size,size)
+headerSize = int(canvas_height/20)
+headerShape = [(0,0), (canvas_width, headerSize)]
+font = ImageFont.FreeTypeFont("fonts/tiny.otf", int(headerSize*0.7))
+posfont = ImageFont.FreeTypeFont("fonts/tiny.otf", int(size*0.6))
 
 options = RGBMatrixOptions()
 options.rows = 32
@@ -82,85 +87,31 @@ while True:
 
     flagOutline = flagFill
     
-    size = (20,20)
-    shape = [(127,0), (127-6, 31)]
-    black_screen = Image.new("RGB", (canvas_width, canvas_height), (0,0,0))
-    pos1 = Image.open("./badge/" + str(driverList[0])+ ".jpg").convert("RGB").resize(size).rotate(270)
-    pos2 = Image.open("./badge/" + str(driverList[1])+ ".jpg").convert("RGB").resize(size).rotate(270)
-    pos3 = Image.open("./badge/" + str(driverList[2])+ ".jpg").convert("RGB").resize(size).rotate(270)
-    pos4 = Image.open("./badge/" + str(driverList[3])+ ".jpg").convert("RGB").resize(size).rotate(270)
-    pos5 = Image.open("./badge/" + str(driverList[4])+ ".jpg").convert("RGB").resize(size).rotate(270)
-    pos6 = Image.open("./badge/" + str(driverList[5])+ ".jpg").convert("RGB").resize(size).rotate(270)
-    pos7 = Image.open("./badge/" + str(driverList[6])+ ".jpg").convert("RGB").resize(size).rotate(270)
-    pos8 = Image.open("./badge/" + str(driverList[7])+ ".jpg").convert("RGB").resize(size).rotate(270)
-    frame = black_screen.copy()
-    frame.paste(pos1, (100+4,11))
-    frame.paste(pos2, (85+4,11))
-    frame.paste(pos3, (70+4,11))
-    frame.paste(pos4, (55+4,11))
-    frame.paste(pos5, (40+4,11))
-    frame.paste(pos6, (25+4,11))
-    frame.paste(pos7, (10+4,11))
-    frame.paste(pos8, (-5+4,11))
+    frame = Image.new("RGB", (canvas_width, canvas_height), (0,0,0))
     draw = ImageDraw.Draw(frame)
-    draw.rectangle(shape, fill =flagFill, outline =flagOutline)
-    
-    tim = Image.new('RGBA', (30,30), (0,0,0,0))
-    dr = ImageDraw.Draw(tim)
-    dr.text((0,0), lapsString, lapsColor, font=font)
-    tim = tim.rotate(270,  expand=1)
-    frame.paste(tim, (97,2), tim)
-    
-    posfont = ImageFont.truetype("fonts/tiny.otf", 10)
-    tim = Image.new('RGBA', (30,30), (0,0,0,0))
-    dr = ImageDraw.Draw(tim)
-    dr.text((0,0), "1", white, font=posfont)
-    tim = tim.rotate(270,  expand=1)
-    frame.paste(tim, (85+4,2), tim)
-    
-    tim = Image.new('RGBA', (30,30), (0,0,0,0))
-    dr = ImageDraw.Draw(tim)
-    dr.text((0,0), "2", white, font=posfont)
-    tim = tim.rotate(270,  expand=1)
-    frame.paste(tim, (70+4,2), tim)
-    
-    tim = Image.new('RGBA', (30,30), (0,0,0,0))
-    dr = ImageDraw.Draw(tim)
-    dr.text((0,0), "3", white, font=posfont)
-    tim = tim.rotate(270,  expand=1)
-    frame.paste(tim, (55+4,2), tim)
-    
-    tim = Image.new('RGBA', (30,30), (0,0,0,0))
-    dr = ImageDraw.Draw(tim)
-    dr.text((0,0), "4", white, font=posfont)
-    tim = tim.rotate(270,  expand=1)
-    frame.paste(tim, (40+4,2), tim)
-    
-    tim = Image.new('RGBA', (30,30), (0,0,0,0))
-    dr = ImageDraw.Draw(tim)
-    dr.text((0,0), "5", white, font=posfont)
-    tim = tim.rotate(270,  expand=1)
-    frame.paste(tim, (25+4,2), tim)
-   
-    tim = Image.new('RGBA', (30,30), (0,0,0,0))
-    dr = ImageDraw.Draw(tim)
-    dr.text((0,0), "6", white, font=posfont)
-    tim = tim.rotate(270,  expand=1)
-    frame.paste(tim, (10+4,2), tim)
-    
-    tim = Image.new('RGBA', (30,30), (0,0,0,0))
-    dr = ImageDraw.Draw(tim)
-    dr.text((0,0), "7", white, font=posfont)
-    tim = tim.rotate(270,  expand=1)
-    frame.paste(tim, (-5+4,2), tim)
-    
-    tim = Image.new('RGBA', (30,30), (0,0,0,0))
-    dr = ImageDraw.Draw(tim)
-    dr.text((0,0), "8", white, font=posfont)
-    tim = tim.rotate(270,  expand=1)
-    frame.paste(tim, (-20+4,2), tim)
-    
-    frame.rotate(180)
+    draw.rectangle(headerShape, fill =flagFill, outline =flagOutline)
 
-    matrix.SetImage(frame)
+    number = 7
+    space = int((canvas_height - headerSize)/number)
+    for k in range(number):
+        badge = Image.open("./badge/" + str(driverList[k])+ ".jpg").resize(badgeSize)
+        frame.paste(badge, (size-int(canvas_width/20),headerSize+space*k),mask=badge)
+
+        
+        tim = Image.new('RGBA', (size,size), (0,0,0,0))
+        dr = ImageDraw.Draw(tim)
+        ow, oh, w, h = draw.textbbox((0,0), str(k+1), font=posfont)
+        dr.text((((size-w)/2),(size-h)/2), str(k+1), white, font=posfont)
+        frame.paste(tim, (0,headerSize+space*k), tim)
+
+    
+    tim = Image.new('RGBA', (canvas_width,headerSize), (0,0,0,0))
+    dr = ImageDraw.Draw(tim)
+    ow, oh, w, h = draw.textbbox((0,0), lapsString, font=font)
+    dr.text((((canvas_width-w)/2),(headerSize-h)/2), lapsString, lapsColor, font=font)
+    frame.paste(tim, (0,0), tim)
+    
+    #frame.rotate(180)
+
+    matrix.SetImage(frame.rotate(270, expand=True))
     time.sleep(0.5)
