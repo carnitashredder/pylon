@@ -44,21 +44,6 @@ while True:
             driverList.append(i["driver"]["driver_id"])  
         #print (driverList)
 
-    if initialized == False:
-        with urllib.request.urlopen("http://cf.nascar.com/cacher/drivers.json") as url:
-            data = json.load(url)
-            for i in data["response"]:
-                for j in driverList:
-                    if j == i["Nascar_Driver_ID"]:
-                        path = "./badge/" + str(i["Nascar_Driver_ID"]) + ".jpg"
-                        if not os.path.isfile(path):
-                            try:
-                                urllib.request.urlretrieve(i["Badge_Image"], path)
-                            except:
-                                print("failed to get image for " + str(i["Nascar_Driver_ID"]))
-                                break
-            initialized = True
-
     flagFill = "purple"
     lapsColor = (255,255,255)
     lapsString = lap_number + "/" + laps_in_race
@@ -84,6 +69,21 @@ while True:
         lapsColor = (0,0,0)
     else:
         initialized = False
+
+    if initialized == False:
+        with urllib.request.urlopen("http://cf.nascar.com/cacher/drivers.json") as url:
+            data = json.load(url)
+            for i in data["response"]:
+                for j in driverList:
+                    if j == i["Nascar_Driver_ID"]:
+                        path = "./badge/" + str(i["Nascar_Driver_ID"]) + ".jpg"
+                        if not os.path.isfile(path):
+                            try:
+                                urllib.request.urlretrieve(i["Badge_Image"], path)
+                            except:
+                                print("failed to get image for " + str(i["Nascar_Driver_ID"]))
+                                break
+            initialized = True
 
     flagOutline = flagFill
     
