@@ -9,15 +9,15 @@ canvas_height = 128*10
 white = (255,255,255)
 size = int(canvas_width/2)
 badgeSize = (size,size)
-headerSize = int(canvas_height/20)
+headerSize = int(canvas_height/15)
 headerShape = [(0,0), (canvas_width, headerSize)]
 font = ImageFont.FreeTypeFont("fonts/tiny.otf", int(headerSize*0.7))
-posfont = ImageFont.FreeTypeFont("fonts/tiny.otf", int(size*0.6))
+posfont = ImageFont.FreeTypeFont("fonts/tiny.otf", int(size*0.2))
 
 while True:
 
-    with urllib.request.urlopen("https://cf.nascar.com/live/feeds/series_2/4933/live_feed.json") as url:
-    #with urllib.request.urlopen("https://cf.nascar.com/live/feeds/live-feed.json") as url:
+    #with urllib.request.urlopen("https://cf.nascar.com/live/feeds/series_2/4933/live_feed.json") as url:
+    with urllib.request.urlopen("https://cf.nascar.com/live/feeds/live-feed.json") as url:
         data = json.load(url)
         #print(data["vehicles"][0]["driver"]["driver_id"])
 
@@ -30,6 +30,12 @@ while True:
         #print (driverList)
 
     if initialized == False:
+        try:
+           os.makedirs("./badge")
+        except FileExistsError:
+           # directory already exists
+           pass
+        
         with urllib.request.urlopen("http://cf.nascar.com/cacher/drivers.json") as url:
             data = json.load(url)
             for i in data["response"]:
@@ -76,19 +82,19 @@ while True:
     draw = ImageDraw.Draw(frame)
     draw.rectangle(headerShape, fill =flagFill, outline =flagOutline)
 
-    number = 7
+    number = 5
     space = int((canvas_height - headerSize)/number)
     for k in range(number):
         badge = Image.open("./badge/" + str(driverList[k])+ ".jpg").resize(badgeSize)
-        frame.paste(badge, (size-int(canvas_width/20),headerSize+space*k),mask=badge)
+        frame.paste(badge, (int((canvas_width - size)/2),int(1+headerSize+(size/4)+space*k)),mask=badge)
 
-        
+        draw.rectangle([(0,1+headerSize+space*k), (canvas_width,2+headerSize+space*k)], fill =white)
+
         tim = Image.new('RGBA', (size,size), (0,0,0,0))
         dr = ImageDraw.Draw(tim)
         ow, oh, w, h = draw.textbbox((0,0), str(k+1), font=posfont)
-        dr.text((((size-w)/2),(size-h)/2), str(k+1), white, font=posfont)
+        dr.text((int(canvas_width/20),(size-h)/2), str(k+1), white, font=posfont)
         frame.paste(tim, (0,headerSize+space*k), tim)
-
     
     tim = Image.new('RGBA', (canvas_width,headerSize), (0,0,0,0))
     dr = ImageDraw.Draw(tim)
@@ -98,5 +104,5 @@ while True:
     
     #frame.rotate(90)
 
-    frame.rotate(270, expand=True).save("screen.jpg")
-    time.sleep(0.5)
+    frame.save("screen.jpg")
+    time.sleep(1)
