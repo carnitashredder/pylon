@@ -4,15 +4,15 @@ import time
 
 initialized = False
 
-canvas_width = 32*10
-canvas_height = 128*10
+canvas_width = 32
+canvas_height = 128
 white = (255,255,255)
 size = int(canvas_width/1.4)
 badgeSize = (size,size)
 headerSize = int(canvas_height/15)
 headerShape = [(0,0), (canvas_width, headerSize)]
 font = ImageFont.FreeTypeFont("fonts/tiny.otf", int(headerSize*0.7))
-posfont = ImageFont.FreeTypeFont("fonts/tiny.otf", int(size*0.2))
+posfont = ImageFont.FreeTypeFont("fonts/tiny.otf", int(size*0.3))
 
 while True:
 
@@ -86,7 +86,7 @@ while True:
     space = int((canvas_height - headerSize)/number)
     for k in range(number):
         badge = Image.open("./badge/" + str(driverList[k])+ ".jpg").resize(badgeSize)
-        frame.paste(badge, (int((canvas_width - size)/2),int(1+headerSize+space*k)),mask=badge)
+        frame.paste(badge, (int((canvas_width - size)/2),int(2+headerSize+space*k)),mask=badge)
 
         draw.rectangle([(0,1+headerSize+space*k), (canvas_width,1+headerSize+space*k)], fill =white)
 
@@ -99,7 +99,7 @@ while True:
     tim = Image.new('RGBA', (canvas_width,headerSize), (0,0,0,0))
     dr = ImageDraw.Draw(tim)
     ow, oh, w, h = draw.textbbox((0,0), lapsString, font=font)
-    dr.text((((canvas_width-w)/2),(headerSize-h)/2), lapsString, lapsColor, font=font)
+    dr.text((((canvas_width-w)/2),1+(headerSize-h)/2), lapsString, lapsColor, font=font)
     frame.paste(tim, (0,0), tim)
     
     #frame.rotate(90)
