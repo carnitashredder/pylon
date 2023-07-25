@@ -129,7 +129,7 @@ while True:
             meterColor = "red"
             
         #pixles 10 to 33  
-        draw.rectangle([(canvas_width-1,33-meterHeight+space*k),(canvas_width-1,33+space*k)], fill =meterColor)
+        draw.rectangle([(canvas_width-2,33-meterHeight+space*k),(canvas_width-1,33+space*k)], fill =meterColor)
     
     tim = Image.new('RGBA', (canvas_width,headerSize), (0,0,0,0))
     dr = ImageDraw.Draw(tim)
