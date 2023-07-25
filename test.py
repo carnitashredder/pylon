@@ -4,6 +4,7 @@ import time
 
 initialized = False
 
+tankRange = 100
 canvas_width = 32
 canvas_height = 128
 white = (255,255,255)
@@ -24,10 +25,16 @@ while True:
         flag_state = str(data["flag_state"])
         lap_number = str(data["lap_number"])
         laps_in_race = str(data["laps_in_race"])
+        track_length = data["track_length"]
         driverList = list()
+        lapTimeList = list()
+        pitLapList = list()
         for i in data["vehicles"]:
-            driverList.append(i["driver"]["driver_id"])  
-        #print (driverList)
+            driverList.append(i["driver"]["driver_id"])
+            lapTimeList.append(i["last_lap_time"])
+            #pitLapList.append(i["pit_stops"][-1]["pit_in_lap_count"])
+            pitLapList.append(120)
+        #print (pitLapList)
 
     if initialized == False:
         try:
@@ -51,7 +58,7 @@ while True:
             initialized = True
 
     flagFill = "purple"
-    lapsColor = (255,255,255)
+    lapsColor = "white"
     lapsString = lap_number + "/" + laps_in_race
     
     if flag_state == "1":
@@ -85,8 +92,8 @@ while True:
     number = 5
     space = int((canvas_height - headerSize)/number)
     for k in range(number):
-        badge = Image.open("./badge/" + str(driverList[k])+ ".jpg").resize(badgeSize)
-        frame.paste(badge, (int((canvas_width - size)/2),int(2+headerSize+space*k)),mask=badge)
+        badge = Image.open("./badge/" + str(driverList[k])+ ".jpg").convert("RGBA").resize(badgeSize)
+        frame.paste(badge, (int((canvas_width - size)/2),int(2+headerSize+space*k)))
 
         draw.rectangle([(0,1+headerSize+space*k), (canvas_width,1+headerSize+space*k)], fill =white)
 
@@ -95,6 +102,25 @@ while True:
         ow, oh, w, h = draw.textbbox((0,0), str(k+1), font=posfont)
         dr.text((int(canvas_width/20),(size-h)/4), str(k+1), white, font=posfont)
         frame.paste(tim, (0,headerSize+space*k), tim)
+
+        if lapTimeList[k] < lapTimeList[0]:
+            draw.polygon([(2,20+space*k),(1,22+space*k),(3,22+space*k)], fill = 'green')
+        elif lapTimeList[k] > lapTimeList[0]:
+            draw.polygon([(1,26+space*k),(3,26+space*k),(2,28+space*k)], fill = 'red')
+        else:
+            draw.rectangle([(1,24+space*k),(3,24+space*k)], fill =white)
+
+        percentage = 1-(((int(lap_number) - pitLapList[k])*int(track_length))/tankRange)
+        meterHeight = int((33-10)*percentage)
+        if percentage > 0.75:
+            meterColor = "green"
+        elif percentage > 0.50:
+            meterColor = "orange"
+        else:
+            meterColor = "red"
+            
+        #pixles 10 to 33  
+        draw.rectangle([(canvas_width-1,33-meterHeight+space*k),(canvas_width-1,33+space*k)], fill =meterColor)
     
     tim = Image.new('RGBA', (canvas_width,headerSize), (0,0,0,0))
     dr = ImageDraw.Draw(tim)
