@@ -7,7 +7,6 @@ initialized = False
 tankRange = 100
 canvas_width = 32
 canvas_height = 128
-white = (255,255,255)
 size = int(canvas_width/1.4)
 badgeSize = (size,size)
 headerSize = int(canvas_height/15)
@@ -95,12 +94,12 @@ while True:
         badge = Image.open("./badge/" + str(driverList[k])+ ".jpg").convert("RGBA").resize(badgeSize)
         frame.paste(badge, (int((canvas_width - size)/2),int(2+headerSize+space*k)))
 
-        draw.rectangle([(0,1+headerSize+space*k), (canvas_width,1+headerSize+space*k)], fill =white)
+        draw.rectangle([(0,1+headerSize+space*k), (canvas_width,1+headerSize+space*k)], fill ='white')
 
         tim = Image.new('RGBA', (size,size), (0,0,0,0))
         dr = ImageDraw.Draw(tim)
         ow, oh, w, h = draw.textbbox((0,0), str(k+1), font=posfont)
-        dr.text((int(canvas_width/20),(size-h)/4), str(k+1), white, font=posfont)
+        dr.text((int(canvas_width/20),(size-h)/4), str(k+1), 'white', font=posfont)
         frame.paste(tim, (0,headerSize+space*k), tim)
 
         if lapTimeList[k] < lapTimeList[0]:
@@ -108,7 +107,7 @@ while True:
         elif lapTimeList[k] > lapTimeList[0]:
             draw.polygon([(1,26+space*k),(3,26+space*k),(2,28+space*k)], fill = 'red')
         else:
-            draw.rectangle([(1,24+space*k),(3,24+space*k)], fill =white)
+            draw.rectangle([(1,24+space*k),(3,24+space*k)], fill='white')
 
         percentage = 1-(((int(lap_number) - pitLapList[k])*int(track_length))/tankRange)
         meterHeight = int((33-10)*percentage)
