@@ -94,7 +94,7 @@ while True:
 
     flagOutline = flagFill
     
-    frame = Image.new("RGBA", (canvas_width, canvas_height), (0,0,0))
+    frame = Image.new("RGB", (canvas_width, canvas_height), (0,0,0))
     draw = ImageDraw.Draw(frame)
     draw.rectangle(headerShape, fill =flagFill, outline =flagOutline)
 
