@@ -34,6 +34,7 @@ while True:
         data = json.load(url)
         flag_state = str(data["flag_state"])
         lap_number = str(data["lap_number"])
+        track_length = data["track_length"]
         laps_in_race = str(data["laps_in_race"])
         driverList = list()
         lapTimeList = list()
