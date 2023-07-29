@@ -31,7 +31,7 @@ matrix = RGBMatrix(options = options)
 while True:
     #https://cf.nascar.com/live/feeds/series_2/5325/live_feed.json
     #https://cf.nascar.com/live/feeds/live-feed.json
-    with urllib.request.urlopen("https://cf.nascar.com/live/feeds/series_2/5325/live_feed.json") as url:
+    with urllib.request.urlopen("https://cf.nascar.com/live/feeds/live-feed.json") as url:
         data = json.load(url)
         flag_state = str(data["flag_state"])
         lap_number = str(data["lap_number"])
@@ -102,8 +102,11 @@ while True:
     number = 5
     space = int((canvas_height - headerSize)/number)
     for k in range(number):
-        badge = Image.open("./badge/" + str(driverList[k])+ ".jpg").convert("RGBA").resize(badgeSize)
-        frame.paste(badge, (int((canvas_width - size)/2),int(2+headerSize+space*k)))
+        try:
+            badge = Image.open("./badge/" + str(driverList[k])+ ".jpg").convert("RGBA").resize(badgeSize)
+            frame.paste(badge, (int((canvas_width - size)/2),int(2+headerSize+space*k)))
+        except:
+            pass
 
         draw.rectangle([(0,1+headerSize+space*k), (canvas_width,1+headerSize+space*k)], fill='white')
 
