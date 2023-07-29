@@ -43,8 +43,10 @@ while True:
         for i in data["vehicles"]:
             driverList.append(i["driver"]["driver_id"])
             lapTimeList.append(i["last_lap_time"])
-            pitLapList.append(i["pit_stops"][-1]["pit_in_lap_count"])
-            
+            try:
+                pitLapList.append(i["pit_stops"][-1]["pit_in_lap_count"])
+            except:
+                pitLapList.append(0)
 
     flagFill = "purple"
     lapsColor = "white"
