@@ -29,8 +29,9 @@ options.drop_privileges = False
 matrix = RGBMatrix(options = options)
 
 while True:
-
-    with urllib.request.urlopen("https://cf.nascar.com/live/feeds/live-feed.json") as url:
+    #https://cf.nascar.com/live/feeds/series_2/5325/live_feed.json
+    #https://cf.nascar.com/live/feeds/live-feed.json
+    with urllib.request.urlopen("https://cf.nascar.com/live/feeds/series_2/5325/live_feed.json") as url:
         data = json.load(url)
         flag_state = str(data["flag_state"])
         lap_number = str(data["lap_number"])
