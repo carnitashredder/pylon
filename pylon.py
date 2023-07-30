@@ -14,6 +14,7 @@ headerSize = int(canvas_height/15)
 headerShape = [(0,0), (canvas_width, headerSize)]
 font = ImageFont.FreeTypeFont("fonts/tiny.otf", int(headerSize*0.7))
 posfont = ImageFont.FreeTypeFont("fonts/tiny.otf", int(size*0.3))
+numfont = ImageFont.FreeTypeFont("fonts/tiny.otf", int(size))
 
 options = RGBMatrixOptions()
 options.rows = 32
@@ -38,10 +39,12 @@ while True:
         track_length = data["track_length"]
         laps_in_race = str(data["laps_in_race"])
         driverList = list()
+        numList = list()
         lapTimeList = list()
         pitLapList = list()
         for i in data["vehicles"]:
             driverList.append(i["driver"]["driver_id"])
+            numList.append(i["vehicle_number"])
             lapTimeList.append(i["last_lap_time"])
             try:
                 pitLapList.append(i["pit_stops"][-1]["pit_in_lap_count"])
@@ -108,7 +111,11 @@ while True:
             badge = Image.open("./badge/" + str(driverList[k])+ ".jpg").convert("RGBA").resize(badgeSize)
             frame.paste(badge, (int((canvas_width - size)/2),int(2+headerSize+space*k)))
         except:
-            pass
+            tim = Image.new('RGBA', (size,size), (0,0,0,0))
+            dr = ImageDraw.Draw(tim)
+            ow, oh, w, h = draw.textbbox((0,0), numList[k], font=numfont)
+            dr.text((int((size-w)/2),int((size-h)/2)), numList[k], 'white', font=numfont)
+            frame.paste(tim, (int((canvas_width - size + 6)/2),int(4+headerSize+space*k)), tim)
 
         draw.rectangle([(0,1+headerSize+space*k), (canvas_width,1+headerSize+space*k)], fill='white')
 
@@ -125,7 +132,7 @@ while True:
         else:
             draw.rectangle([(1,24+space*k),(3,24+space*k)], fill='white')
 
-        percentage = 1-(((int(lap_number) - pitLapList[k])*int(track_length))/tankRange)
+        percentage = 1-(float(lap_number) - pitLapList[k])*float(track_length)/tankRange
         meterHeight = int((33-10)*percentage)
         if percentage > 0.75:
             meterColor = "green"
