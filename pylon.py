@@ -38,7 +38,7 @@ while True:
         data = json.load(url)
         currentTime = data["elapsed_time"]
     if currentTime != previousTime:
-        previousTime = updateTime
+        previousTime = currentTime
         flag_state = str(data["flag_state"])
         lap_number = str(data["lap_number"])
         track_length = data["track_length"]
