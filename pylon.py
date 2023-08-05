@@ -4,8 +4,7 @@ from rgbmatrix import RGBMatrix, RGBMatrixOptions
 import time
 
 initialized = False
-updateFlag = True
-previousTime = 0
+previousTime = -1
 
 tankRange = 100
 canvas_width = 32
@@ -39,7 +38,6 @@ while True:
         data = json.load(url)
         currentTime = data["elapsed_time"]
     if currentTime != previousTime:
-        updateFlag = True
         previousTime = updateTime
         flag_state = str(data["flag_state"])
         lap_number = str(data["lap_number"])
@@ -58,7 +56,6 @@ while True:
             except:
                 pitLapList.append(0)
                     
-    if updateFlag == True:
         updateFlag = False
         flagFill = "purple"
         lapsColor = "white"
