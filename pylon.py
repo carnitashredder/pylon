@@ -4,7 +4,7 @@ from rgbmatrix import RGBMatrix, RGBMatrixOptions
 import time
 
 initialized = False
-updateFlag = False
+updateFlag = True
 previousTime = 0
 
 tankRange = 100
@@ -37,26 +37,28 @@ while True:
     #https://cf.nascar.com/live/feeds/live-feed.json
     with urllib.request.urlopen("https://cf.nascar.com/live/feeds/live-feed.json") as url:
         data = json.load(url)
-        currentTime = data["elapsed_time"])
-        if currentTime =! previousTime:
-            updateFlag = True
-            flag_state = str(data["flag_state"])
-            lap_number = str(data["lap_number"])
-            track_length = data["track_length"]
-            laps_in_race = str(data["laps_in_race"])
-            driverList = list()
-            numList = list()
-            lapTimeList = list()
-            pitLapList = list()
-            for i in data["vehicles"]:
-                driverList.append(i["driver"]["driver_id"])
-                numList.append(i["vehicle_number"])
-                lapTimeList.append(i["last_lap_time"])
-                try:
-                    pitLapList.append(i["pit_stops"][-1]["pit_in_lap_count"])
-                except:
-                    pitLapList.append(0)
-    if updateFlag = True:
+        currentTime = data["elapsed_time"]
+    if currentTime != previousTime:
+        updateFlag = True
+        previousTime = updateTime
+        flag_state = str(data["flag_state"])
+        lap_number = str(data["lap_number"])
+        track_length = data["track_length"]
+        laps_in_race = str(data["laps_in_race"])
+        driverList = list()
+        numList = list()
+        lapTimeList = list()
+        pitLapList = list()
+        for i in data["vehicles"]:
+            driverList.append(i["driver"]["driver_id"])
+            numList.append(i["vehicle_number"])
+            lapTimeList.append(i["last_lap_time"])
+            try:
+                pitLapList.append(i["pit_stops"][-1]["pit_in_lap_count"])
+            except:
+                pitLapList.append(0)
+                    
+    if updateFlag == True:
         updateFlag = False
         flagFill = "purple"
         lapsColor = "white"
