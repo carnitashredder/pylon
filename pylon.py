@@ -1,7 +1,12 @@
+debug = False
+
 import urllib.request, json, os
 from PIL import Image, ImageFont, ImageDraw
-from rgbmatrix import RGBMatrix, RGBMatrixOptions
+from datetime import datetime
+from dateutil import tz
 import time
+if debug == False:
+    from rgbmatrix import RGBMatrix, RGBMatrixOptions
 
 initialized = False
 previousTime = -1
@@ -15,31 +20,56 @@ headerSize = int(canvas_height/15)
 headerShape = [(0,0), (canvas_width, headerSize)]
 font = ImageFont.FreeTypeFont("fonts/tiny.otf", int(headerSize*0.7))
 posfont = ImageFont.FreeTypeFont("fonts/tiny.otf", int(size*0.3))
-numfont = ImageFont.FreeTypeFont("fonts/tiny.otf", int(size))
+numfont = ImageFont.FreeTypeFont("fonts/tiny.otf", int(size*0.6))
+clockFont = ImageFont.FreeTypeFont("fonts/tiny.otf", int(size*0.9))
 
-options = RGBMatrixOptions()
-options.rows = 32
-options.cols = 64
-options.chain_length = 2
-options.parallel = 1
-options.brightness = 100
-options.gpio_slowdown = 1
-options.pwm_lsb_nanoseconds = 80
-options.limit_refresh_rate_hz = 150
-options.hardware_mapping = 'adafruit-hat'
-options.drop_privileges = False
-matrix = RGBMatrix(options = options)
+if debug == False:
+    options = RGBMatrixOptions()
+    options.rows = 32
+    options.cols = 64
+    options.chain_length = 2
+    options.parallel = 1
+    options.brightness = 75
+    options.gpio_slowdown = 1
+    options.pwm_lsb_nanoseconds = 300
+    options.limit_refresh_rate_hz = 400
+    options.hardware_mapping = 'adafruit-hat-pwm'
+    options.drop_privileges = False
+    matrix = RGBMatrix(options = options)
+
+def padToTwoDigit(num):
+    if num < 10:
+        return "0" + str(num)
+    else:
+        return str(num)
 
 while True:
     time.sleep(1)
-    #https://cf.nascar.com/live/feeds/series_2/5325/live_feed.json
-    #https://cf.nascar.com/live/feeds/live-feed.json
+    frame = Image.new("RGB", (canvas_width, canvas_height), (0,0,0))
     with urllib.request.urlopen("https://cf.nascar.com/live/feeds/live-feed.json") as url:
         data = json.load(url)
-        currentTime = data["elapsed_time"]
-    if currentTime != previousTime:
-        previousTime = currentTime
-        flag_state = str(data["flag_state"])
+    
+    flag_state = str(data["flag_state"])
+
+    if flag_state != "9":
+        frame = nascar(data)
+        
+    if flag_state == "9":
+        currentTime = datetime.now(tz=tz.tzlocal())
+        month = currentTime.month
+        day = currentTime.day
+        dayOfWeek = currentTime.weekday() + 1
+        hours = currentTime.hour
+        minutes = currentTime.minute
+
+        number = 5
+        space = int((canvas_height - headerSize)/number)
+        draw = ImageDraw.Draw(frame)
+        ow, oh, w, h = draw.textbbox((0,0), padToTwoDigit(hours), font=clockFont)
+        draw.text((int((size-w+14)/2),int(4+headerSize+space*1)), padToTwoDigit(hours), "white", font=clockFont)
+        draw.text((int((size-w+14)/2),int(4+headerSize+space*2)), padToTwoDigit(minutes), "white", font=clockFont)
+
+    def nascar(data):
         lap_number = str(data["lap_number"])
         track_length = data["track_length"]
         laps_in_race = str(data["laps_in_race"])
@@ -91,6 +121,7 @@ while True:
                pass
             
             with urllib.request.urlopen("http://cf.nascar.com/cacher/drivers.json") as url:
+                initialized = True
                 data = json.load(url)
                 for i in data["response"]:
                     for j in driverList:
@@ -102,11 +133,8 @@ while True:
                                 except:
                                     print("failed to get image for " + str(i["Nascar_Driver_ID"]))
                                     break
-                initialized = True
 
         flagOutline = flagFill
-        
-        frame = Image.new("RGB", (canvas_width, canvas_height), (0,0,0))
         draw = ImageDraw.Draw(frame)
         draw.rectangle(headerShape, fill =flagFill, outline =flagOutline)
 
@@ -155,5 +183,9 @@ while True:
         ow, oh, w, h = draw.textbbox((0,0), lapsString, font=font)
         dr.text((((canvas_width-w)/2),1+(headerSize-h)/2), lapsString, lapsColor, font=font)
         frame.paste(tim, (0,0), tim)
+        return frame
 
+    if debug == False:
         matrix.SetImage(frame.rotate(270, expand=True))
+    else:
+       frame.save("screen.jpg") 
