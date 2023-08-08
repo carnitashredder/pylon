@@ -14,11 +14,11 @@ previousTime = -1
 tankRange = 100
 canvas_width = 32
 canvas_height = 128
-size = int(canvas_width/1.4)
+size = 20
 badgeSize = (size,size)
-headerSize = int(canvas_height/15)
+headerSize = 11
 headerShape = [(0,0), (canvas_width, headerSize)]
-font = ImageFont.FreeTypeFont("fonts/tiny.otf", int(headerSize*0.7))
+lapFont = ImageFont.FreeTypeFont("fonts/tiny.otf", 5)
 posfont = ImageFont.FreeTypeFont("fonts/tiny.otf", int(size*0.3))
 numfont = ImageFont.FreeTypeFont("fonts/tiny.otf", int(size*0.6))
 clockFont = ImageFont.FreeTypeFont("fonts/tiny.otf", int(size*0.9))
@@ -44,6 +44,9 @@ def padToTwoDigit(num):
         return str(num)
 
 def nascar(data):
+    bg = Image.open("./bgs/test.png").convert("RGB")
+    frame.paste(bg,(0,0))
+    
     lap_number = str(data["lap_number"])
     track_length = data["track_length"]
     laps_in_race = str(data["laps_in_race"])
@@ -108,17 +111,24 @@ def nascar(data):
                             except:
                                 print("failed to get image for " + str(i["Nascar_Driver_ID"]))
                                 break
-
+    #flag status indicator
     flagOutline = flagFill
     draw = ImageDraw.Draw(frame)
     draw.rectangle(headerShape, fill =flagFill, outline =flagOutline)
+    tim = Image.new('RGBA', (canvas_width,headerSize), (0,0,0,0))
+
+    #lap string
+    dr = ImageDraw.Draw(tim)
+    ow, oh, w, h = draw.textbbox((0,0), lapsString, font=lapFont)
+    dr.text((((canvas_width-w)/2),1+(headerSize-h)/2), lapsString, lapsColor, font=lapFont)
+    frame.paste(tim, (0,0), tim)
 
     number = 5
-    space = int((canvas_height - headerSize)/number)
+    space = 23
     for k in range(number):
         try:
             badge = Image.open("./badge/" + str(driverList[k])+ ".jpg").convert("RGBA").resize(badgeSize)
-            frame.paste(badge, (int((canvas_width - size)/2),int(2+headerSize+space*k)))
+            frame.paste(badge,(6,14 + space*k), mask=badge)
         except:
             tim = Image.new('RGBA', (size,size), (0,0,0,0))
             dr = ImageDraw.Draw(tim)
@@ -126,38 +136,29 @@ def nascar(data):
             dr.text((int((size-w)/2),int((size-h)/2)), numList[k], 'white', font=numfont)
             frame.paste(tim, (int((canvas_width - size + 6)/2),int(4+headerSize+space*k)), tim)
 
-        draw.rectangle([(0,1+headerSize+space*k), (canvas_width,1+headerSize+space*k)], fill='white')
-
-        tim = Image.new('RGBA', (size,size), (0,0,0,0))
-        dr = ImageDraw.Draw(tim)
-        ow, oh, w, h = draw.textbbox((0,0), str(k+1), font=posfont)
-        dr.text((int(canvas_width/20),(size-h)/4), str(k+1), 'white', font=posfont)
-        frame.paste(tim, (0,headerSize+space*k), tim)
-
+        #lap comparison icons
+        up = Image.open("./bgs/up.png").convert("RGB")
+        even = Image.open("./bgs/even.png").convert("RGB")
+        down = Image.open("./bgs/down.png").convert("RGB")
         if lapTimeList[k] < lapTimeList[0]:
-            draw.polygon([(2,20+space*k),(1,22+space*k),(3,22+space*k)], fill = 'green')
+            frame.paste(up,(1,21 + k*space))
         elif lapTimeList[k] > lapTimeList[0]:
-            draw.polygon([(1,26+space*k),(3,26+space*k),(2,28+space*k)], fill = 'red')
+            frame.paste(down,(1,30 + k*space))
         else:
-            draw.rectangle([(1,24+space*k),(3,24+space*k)], fill='white')
+            frame.paste(even,(1,27 + k*space))
 
+        #fuel indicator
         percentage = 1-(float(lap_number) - pitLapList[k])*float(track_length)/tankRange
-        meterHeight = int((33-10)*percentage)
-        if percentage > 0.75:
+        meterHeight = int(21*percentage)
+        if percentage > 0.50:
             meterColor = "green"
-        elif percentage > 0.50:
+        elif percentage > 0.25:
             meterColor = "orange"
         else:
             meterColor = "red"
-            
-        #pixles 10 to 33  
-        draw.rectangle([(canvas_width-2,33-meterHeight+space*k),(canvas_width-1,33+space*k)], fill =meterColor)
-    
-    tim = Image.new('RGBA', (canvas_width,headerSize), (0,0,0,0))
-    dr = ImageDraw.Draw(tim)
-    ow, oh, w, h = draw.textbbox((0,0), lapsString, font=font)
-    dr.text((((canvas_width-w)/2),1+(headerSize-h)/2), lapsString, lapsColor, font=font)
-    frame.paste(tim, (0,0), tim)
+             
+        draw.rectangle([(27,34 - meterHeight + k*space),(28,34 + k*space)], fill=meterColor)
+        
     return frame
 
 while True:
@@ -177,6 +178,8 @@ while True:
         day = currentTime.day
         dayOfWeek = currentTime.weekday() + 1
         hours = currentTime.hour
+        if hours > 12:
+            hours = hours - 12
         minutes = currentTime.minute
 
         number = 5
@@ -185,6 +188,9 @@ while True:
         ow, oh, w, h = draw.textbbox((0,0), padToTwoDigit(hours), font=clockFont)
         draw.text((int((size-w+14)/2),int(4+headerSize+space*1)), padToTwoDigit(hours), "white", font=clockFont)
         draw.text((int((size-w+14)/2),int(4+headerSize+space*2)), padToTwoDigit(minutes), "white", font=clockFont)
+
+        draw.text((8,20), padToTwoDigit(month), "white", font=font)
+        draw.text((18,20), padToTwoDigit(day), "white", font=font)
 
     if debug == False:
         matrix.SetImage(frame.rotate(270, expand=True))
