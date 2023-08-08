@@ -13,7 +13,7 @@
    version="1.1"
    id="svg8"
    inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
-   sodipodi:docname="score.svg">
+   sodipodi:docname="bg.svg">
   <defs
      id="defs2" />
   <sodipodi:namedview
@@ -23,9 +23,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="14.311392"
-     inkscape:cx="110.00184"
-     inkscape:cy="27.53719"
+     inkscape:zoom="2.5299206"
+     inkscape:cx="-43.718755"
+     inkscape:cy="18.931715"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -61,8 +61,8 @@
        rx="5.7845541e-17" />
     <g
        id="g1838"
-       inkscape:export-xdpi="96"
-       inkscape:export-ydpi="96">
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100">
       <rect
          style="fill:#000000;stroke-width:0.0438063"
          id="rect2740-6"
@@ -401,7 +401,9 @@
        inkscape:transform-center-y="0.17638829"
        transform="matrix(1.3333333,0,0,1.5396007,-17.387998,-3.9956624)"
        inkscape:transform-center-x="1.0927708e-06"
-       d="m 13.636311,8.4382241 -0.396875,-0.6874076 0.79375,-1e-7 z" />
+       d="m 13.636311,8.4382241 -0.396875,-0.6874076 0.79375,-1e-7 z"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
     <path
        sodipodi:type="star"
        style="fill:#008000;stroke-width:0.113416"
@@ -419,7 +421,9 @@
        inkscape:transform-center-y="-0.17239884"
        transform="matrix(-1.3333333,0.01508297,-0.01751538,-1.5308926,19.111257,18.268588)"
        inkscape:transform-center-x="-0.0040145417"
-       d="m 13.636311,8.4382241 -0.396875,-0.6874076 0.79375,-1e-7 z" />
+       d="m 13.636311,8.4382241 -0.396875,-0.6874076 0.79375,-1e-7 z"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
     <rect
        style="fill:#ffffff;stroke-width:0.250224"
        id="rect1131"

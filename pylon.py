@@ -44,7 +44,7 @@ def padToTwoDigit(num):
         return str(num)
 
 def nascar(data):
-    bg = Image.open("./bgs/test.png").convert("RGB")
+    bg = Image.open("./bgs/score.png").convert("RGB")
     frame.paste(bg,(0,0))
     
     lap_number = str(data["lap_number"])
