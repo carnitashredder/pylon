@@ -186,11 +186,11 @@ while True:
         space = int((canvas_height - headerSize)/number)
         draw = ImageDraw.Draw(frame)
         ow, oh, w, h = draw.textbbox((0,0), padToTwoDigit(hours), font=clockFont)
-        draw.text((int((size-w+14)/2),int(4+headerSize+space*1)), padToTwoDigit(hours), "white", font=clockFont)
-        draw.text((int((size-w+14)/2),int(4+headerSize+space*2)), padToTwoDigit(minutes), "white", font=clockFont)
+        draw.text((int((size-w+18)/2),int(4+headerSize+space*1)), padToTwoDigit(hours), "white", font=clockFont)
+        draw.text((int((size-w+18)/2),int(4+headerSize+space*2)), padToTwoDigit(minutes), "white", font=clockFont)
 
-        draw.text((8,20), padToTwoDigit(month), "white", font=font)
-        draw.text((18,20), padToTwoDigit(day), "white", font=font)
+        draw.text((8,20), padToTwoDigit(month), "white", font=lapFont)
+        draw.text((18,20), padToTwoDigit(day), "white", font=lapFont)
 
     if debug == False:
         matrix.SetImage(frame.rotate(270, expand=True))
