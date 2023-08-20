@@ -67,7 +67,7 @@ def nascar(data):
     flagFill = "purple"
     lapsColor = "white"
     lapsString = lap_number + "/" + laps_in_race
-    initialized = False
+    #initialized = False
     
     if flag_state == "1":
         flagFill = "green"

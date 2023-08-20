@@ -1,5 +1,7 @@
 import urllib.request, json, os
 from PIL import Image, ImageFont, ImageDraw
+from datetime import datetime
+from dateutil import tz
 import time
 
 initialized = False
@@ -16,7 +18,15 @@ posfont = ImageFont.FreeTypeFont("fonts/tiny.otf", int(size*0.3))
 numfont = ImageFont.FreeTypeFont("fonts/tiny.otf", int(size*0.6))
 
 while True:
+    currentTime = datetime.now(tz=tz.tzlocal())
+    month = currentTime.month
+    day = currentTime.day
+    dayOfWeek = currentTime.weekday() + 1
+    hours = currentTime.hour
+    minutes = currentTime.minute
 
+    #https://cf.nascar.com/live/feeds/series_2/5325/live_feed.json
+    #https://cf.nascar.com/live/feeds/live-feed.json
     #with urllib.request.urlopen("https://cf.nascar.com/live/feeds/series_2/4933/live_feed.json") as url:
     with urllib.request.urlopen("https://cf.nascar.com/live/feeds/live-feed.json") as url:
         data = json.load(url)
