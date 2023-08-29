@@ -44,6 +44,7 @@ def padToTwoDigit(num):
         return str(num)
 
 def nascar(data):
+    global initialized
     bg = Image.open("./bgs/score.png").convert("RGB")
     frame.paste(bg,(0,0))
     
@@ -164,10 +165,14 @@ def nascar(data):
 while True:
     time.sleep(1)
     frame = Image.new("RGB", (canvas_width, canvas_height), (0,0,0))
-    with urllib.request.urlopen("https://cf.nascar.com/live/feeds/live-feed.json") as url:
-        data = json.load(url)
-    
-    flag_state = str(data["flag_state"])
+    try:
+        with urllib.request.urlopen("https://cf.nascar.com/live/feeds/live-feed.json") as url:
+            data = json.load(url)
+        
+        flag_state = str(data["flag_state"])
+        
+    except:
+        flag_state = "9"
 
     if flag_state != "9":
         frame = nascar(data)
@@ -191,6 +196,7 @@ while True:
 
         draw.text((8,20), padToTwoDigit(month), "white", font=lapFont)
         draw.text((18,20), padToTwoDigit(day), "white", font=lapFont)
+        time.sleep(50)
 
     if debug == False:
         matrix.SetImage(frame.rotate(270, expand=True))
