@@ -177,7 +177,7 @@ while True:
     if flag_state != "9" and len(data["vehicles"]) >= 5:
         frame = nascar(data)
         
-    if flag_state == "9":
+    else:
         currentTime = datetime.now(tz=tz.tzlocal())
         month = currentTime.month
         day = currentTime.day
