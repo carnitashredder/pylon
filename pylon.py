@@ -174,7 +174,7 @@ while True:
     except:
         flag_state = "9"
 
-    if flag_state != "9" and len(data["vehicles"] >= 5):
+    if flag_state != "9" and len(data["vehicles"]) >= 5:
         frame = nascar(data)
         
     if flag_state == "9":
